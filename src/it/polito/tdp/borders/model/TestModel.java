@@ -8,14 +8,16 @@ public class TestModel {
 
 		System.out.println("TestModel -- TODO");
 		
-		int anno=1817;
+		int anno=2000;
 		System.out.println("Creo il grafo relativo all' anno "+anno);
 		model.creagrafo(anno);
 		System.out.println("vertici "+model.getGrafo().vertexSet().size()+ " archi "+ model.getGrafo().edgeSet().size());
 
 		System.out.println(model.elencoStatiGrado());
 		System.out.println("Numero componenti connesse "+model.elecncoComponentiConnesse());
-
+		
+		Country stato=new Country(2, "USA", "United States of America");
+		System.out.println("Elenco stati vicini "+model.trovaStatiVicini(stato));
 		
 		
 	}

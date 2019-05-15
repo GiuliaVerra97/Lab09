@@ -1,6 +1,8 @@
 package it.polito.tdp.borders.model;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.jgrapht.Graph;
@@ -8,6 +10,7 @@ import org.jgrapht.Graphs;
 import org.jgrapht.alg.ConnectivityInspector;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.SimpleGraph;
+import org.jgrapht.traverse.BreadthFirstIterator;
 
 import it.polito.tdp.borders.db.BordersDAO;
 
@@ -39,8 +42,7 @@ public class Model {
 		mappaNazioniConnesse=new HashMap<Integer, Country>();
 		
 		BordersDAO dao=new BordersDAO();
-		dao.loadAllCountries(mappaCountry);
-		
+		dao.loadAllCountries(mappaCountry);			//in questo modo la mappaCountry in automatico si riempe
 		
 		for(Border b: dao.getCountryPairs(anno, mappaCountry)) {
 			
@@ -67,9 +69,11 @@ public class Model {
 
 
 	
-	
-	
-	
+	/**
+	 * Metodo che mi permette di capire quanti stati sono confinanti con ogni stato (vertice del grafo) 
+	 * nell'anno passato nell'interfaccia
+	 * @return stringa di tutti gli stati con il numero di stati confinanti a loro
+	 */
 	
 	public String elencoStatiGrado() {
 				
@@ -87,8 +91,44 @@ public class Model {
 	
 	
 
+	/**
+	 * Metodo che permette di capire in quanti pezzi sconnessi si compone il grafo. In questo caso si tratta dei continenti 
+	 * @return numero componenti connesse 
+	 */
 
+	public int elecncoComponentiConnesse() {		//continenti dove ci sono gli stati connessi tra loro
+		ConnectivityInspector<Country, DefaultEdge> conn=new ConnectivityInspector<Country, DefaultEdge>(grafo);
+		return conn.connectedSets().size();
+	}
+	
+	
 
+	/**
+	 * Metodo che trova tutti gli stati vicini allo stato passato come parametro
+	 * @param stato
+	 * @return lista di {@link Country}
+	 */
+	
+	public List<Country> trovaStatiVicini(Country stato){
+		
+		
+		List<Country> vicini=new ArrayList<Country>();
+		
+		BreadthFirstIterator<Country, DefaultEdge> iteratore=new BreadthFirstIterator<Country, DefaultEdge>(this.grafo, stato);
+		
+		while(iteratore.hasNext()) {
+			vicini.add(iteratore.next());
+		}
+		
+		vicini.remove(stato);
+		
+		return vicini;
+		
+		
+	}
+	
+	
+	
 
 	public Graph<Country, DefaultEdge> getGrafo() {
 		return grafo;
@@ -98,18 +138,6 @@ public class Model {
 		return mappaCountry;
 	}
 
-	
-
-	public int elecncoComponentiConnesse() {		//continenti dove ci sono dli stati connessi tra loro
-		ConnectivityInspector<Country, DefaultEdge> conn=new ConnectivityInspector<Country, DefaultEdge>(grafo);
-		return conn.connectedSets().size();
-	}
-	
-	
-	
-	
-	
-	
 	
 	
 }
