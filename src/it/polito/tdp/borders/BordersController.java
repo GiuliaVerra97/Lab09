@@ -28,16 +28,41 @@ public class BordersController {
 
 	@FXML // fx:id="txtResult"
 	private TextArea txtResult; // Value injected by FXMLLoader
+	
 
 	@FXML
 	void doCalcolaConfini(ActionEvent event) {
+		
+		
+		txtResult.clear();
+		int anno=0;
+		
+		if(txtAnno.getText()==null) {
+			txtResult.setText("Inserire anno\n");
+			return;
+		}else {
+			try {
+				anno=Integer.parseInt(txtAnno.getText());
+			}catch(NumberFormatException e) {
+				txtResult.setText("Errore: bisogna inserire un numero intero");
+			}
+			
+			model.creagrafo(anno);
+			txtResult.appendText("Nell'anno "+anno+" ci sono: "+model.getGrafo().vertexSet().size()+" \n"+model.elencoStatiGrado());
+			txtResult.appendText("Le componenti connesse sono "+model.elecncoComponentiConnesse());
+			
+		}
+		
 
-		txtResult.setText("Todo!");
 	}
 
 	@FXML // This method is called by the FXMLLoader when initialization is complete
 	void initialize() {
 		assert txtAnno != null : "fx:id=\"txtAnno\" was not injected: check your FXML file 'Borders.fxml'.";
 		assert txtResult != null : "fx:id=\"txtResult\" was not injected: check your FXML file 'Borders.fxml'.";
+	}
+
+	public void setModel(Model model2) {
+		this.model=model2;
 	}
 }
